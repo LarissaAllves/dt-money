@@ -1,4 +1,4 @@
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, useEffect } from "react";
 import Modal from "react-modal";
 import closeImg from "../../assets/close.svg";
 import incomeImg from "../../assets/income.svg";
@@ -6,6 +6,7 @@ import incomeImg from "../../assets/income.svg";
 import outcomeImg from "../../assets/outcome.svg";
 
 import { Container, TransactionTypeContainer, RadioBox } from "./styles";
+import api from "../../services/api";
 
 interface NewTransactionModelProps {
   isOpen: boolean;
@@ -22,9 +23,22 @@ export function NewTransactionModel({
 
   const [type, setType] = useState("deposit");
 
-  function handleCreateNewTransaction(event: FormEvent) {
+  async function handleCreateNewTransaction(event: FormEvent) {
     event.preventDefault();
-    console.log(title, amount, category, type);
+    const data = {
+      title,
+      amount,
+      type,
+      category,
+    };
+    await api.post("/transactions", data);
+
+    setTitle("");
+    setAmount(0);
+    setCategory("");
+    setType("deposit");
+
+    alert("Cadastro realizado com sucesso");
   }
 
   return (
